@@ -1,9 +1,4 @@
-"""
-Event Management Routes
-"""
-
 from flask import jsonify, request, send_file
-from flask_jwt_extended import jwt_required
 from db import (
     create_event, get_events, get_event_by_id, update_event, delete_event,
     get_event_registrations, get_registration_by_id, save_registration
@@ -28,7 +23,6 @@ def create_routes(app):
             return jsonify({'error': 'Failed to fetch events'}), 500
 
     @app.route('/api/events', methods=['POST'])
-    @jwt_required()
     def create_new_event():
         """Create a new event (admin only)"""
         try:
@@ -68,7 +62,6 @@ def create_routes(app):
             return jsonify({'error': 'Failed to fetch event'}), 500
 
     @app.route('/api/events/<event_id>', methods=['PUT'])
-    @jwt_required()
     def update_single_event(event_id):
         """Update an event (admin only)"""
         try:
@@ -90,7 +83,6 @@ def create_routes(app):
             return jsonify({'error': 'Failed to update event'}), 500
 
     @app.route('/api/events/<event_id>', methods=['DELETE'])
-    @jwt_required()
     def delete_single_event(event_id):
         """Delete an event (admin only)"""
         try:
@@ -109,7 +101,6 @@ def create_routes(app):
             return jsonify({'error': 'Failed to delete event'}), 500
 
     @app.route('/api/events/<event_id>/registrations', methods=['GET'])
-    @jwt_required()
     def get_event_registrations_list(event_id):
         """Get registrations for an event (admin only)"""
         try:
@@ -182,7 +173,6 @@ def create_routes(app):
             return jsonify({'error': 'Failed to register'}), 500
 
     @app.route('/api/events/<event_id>/export-csv', methods=['GET'])
-    @jwt_required()
     def export_registrations_csv(event_id):
         """Export event registrations as CSV"""
         try:

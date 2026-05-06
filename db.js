@@ -1,5 +1,3 @@
-/* ── Database Module — PostgreSQL + CSV Support ─────────────────── */
-
 import dotenv from 'dotenv';
 import pkg from 'pg';
 import fs from 'fs';
@@ -35,9 +33,9 @@ if (DB_TYPE === 'postgres') {
   });
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* INITIALIZE DATABASE                                               */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* INITIALIZE DATABASE */
+
 
 export async function initDb() {
   if (DB_TYPE === 'postgres') {
@@ -113,9 +111,9 @@ async function initCsv() {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* REGISTRATION CRUD OPERATIONS                                      */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* REGISTRATION CRUD OPERATIONS */
+
 
 export async function saveRegistration(data) {
   const id = uuidv4();
@@ -198,9 +196,9 @@ async function saveRegistrationCsv(reg) {
   });
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* FETCH REGISTRATIONS                                               */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* FETCH REGISTRATIONS */
+
 
 export async function getRegistrations() {
   if (DB_TYPE === 'postgres') {
@@ -252,9 +250,9 @@ async function getRegistrationsCsv() {
   });
 }
 
-/* ────────────────────────────────────────────────────────────────── */
+/*  ────────────────── */
 /* FETCH SINGLE REGISTRATION                                         */
-/* ────────────────────────────────────────────────────────────────── */
+/*  ────────────────── */
 
 export async function getRegistrationById(id) {
   if (DB_TYPE === 'postgres') {
@@ -283,9 +281,9 @@ async function getRegistrationByIdCsv(id) {
   return registrations.find((r) => r.id === id) || null;
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* UPDATE REGISTRATION                                               */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* UPDATE REGISTRATION     */
+
 
 export async function updateRegistration(id, updates) {
   if (DB_TYPE === 'postgres') {
@@ -374,9 +372,9 @@ async function updateRegistrationCsv(id, updates) {
   return registrations[index];
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* DELETE REGISTRATION                                               */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* DELETE REGISTRATION  */
+
 
 export async function deleteRegistration(id) {
   if (DB_TYPE === 'postgres') {
@@ -403,9 +401,9 @@ async function deleteRegistrationCsv(id) {
   return true;
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* CSV UTILITY FUNCTIONS                                             */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* CSV UTILITY FUNCTIONS    */
+
 
 async function writeCsvFile(registrations) {
   return new Promise((resolve, reject) => {
@@ -446,9 +444,9 @@ async function writeCsvFile(registrations) {
   });
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* ADMIN USER CRUD (PostgreSQL only for now)                         */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* ADMIN USER CRUD (PostgreSQL only for now, verry sad ik but what ya gona do, fight me about it, aslo u think i have time to do this look at how extra i went already)   */
+
 
 export async function saveAdminUser(username, passwordHash) {
   if (DB_TYPE !== 'postgres') {

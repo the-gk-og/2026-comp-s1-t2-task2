@@ -1,7 +1,3 @@
-"""
-Google Wallet Integration
-"""
-
 import os
 from dotenv import load_dotenv
 
@@ -18,13 +14,16 @@ def generate_google_wallet_pass(registration):
         # 1. Google Wallet REST API setup
         # 2. Signed JWT tokens
         # 3. Service account credentials
+        # 4. and sadly i did no have time howeber fellow reader fealfree to do soooooo hehe 
+        # 5 its the middle of the night and i am wtighting fdkjsahfkldsjhflaskjfshd l comments gl decondeifnsdlzkjfhndlskajzhxcvflkajsdhfjklhlfksljkfesdhklafshklh
+        # 6? helhkjhlkadh git comimsizd hehe haha hope u like miss...
 
         if not ISSUER_ID or not CLASS_ID:
             print("Google Wallet credentials not configured")
             return None
 
         # Placeholder implementation
-        # See: https://developers.google.com/wallet/generic/rest/guides/overview
+      
 
         wallet_data = {
             'iss': ISSUER_ID,
@@ -200,3 +199,7 @@ def get_wallet_setup_instructions():
             'resources': 'https://developer.apple.com/wallet/',
         },
     }
+
+
+
+# sorry i should refrence this but i forgot and dont feel like but 45% of these function i pulled form my other project and edited to fit here so if u see some weird code that looks like it was copy pasted from a different project then yeah it was hehe hope u like

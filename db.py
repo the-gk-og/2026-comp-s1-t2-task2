@@ -1,8 +1,3 @@
-"""
-Database Module - PostgreSQL + CSV Support
-Events & Form Builder Support
-"""
-
 import os
 import csv
 import json
@@ -111,9 +106,12 @@ def init_csv():
         
         # Create default demo event
         demo_fields = [
-            {'name': 'name', 'label': 'Full Name', 'type': 'text', 'required': True},
-            {'name': 'email', 'label': 'Email Address', 'type': 'email', 'required': True},
-            {'name': 'ticket', 'label': 'Ticket Type', 'type': 'select', 'required': True, 'options': ['General', 'VIP', 'Student']},
+            {'name': 'name', 'label': 'Name', 'type': 'text', 'required': True, 'placeholder': 'Enter full name'},
+            {'name': 'email', 'label': 'Email', 'type': 'email', 'required': True, 'placeholder': 'name@example.com'},
+            {'name': 'ticket', 'label': 'Ticket type', 'type': 'select', 'required': True, 'options': ['General', 'VIP', 'Student']},
+            {'name': 'dietary', 'label': 'Dietary requirements', 'type': 'text', 'required': False, 'placeholder': 'Optional dietary requirements'},
+            {'name': 'sessions', 'label': 'Session selections', 'type': 'checkbox', 'required': True, 'options': ['Opening Keynote', 'Workshop A', 'Workshop B', 'Closing Panel']},
+            {'name': 'paymentStatus', 'label': 'Payment status', 'type': 'select', 'required': True, 'options': ['Pending', 'Paid', 'Complimentary', 'Invoiced']},
         ]
         with open(EVENTS_CSV_PATH, 'a', newline='') as f:
             writer = csv.writer(f)
@@ -145,9 +143,9 @@ def init_csv():
 
 
 
-# ──────────────────────────────────────────────────────────────────
+#  ──────────────────
 # REGISTRATION CRUD OPERATIONS
-# ──────────────────────────────────────────────────────────────────
+#  ──────────────────
 
 def save_registration(data):
     """Save a new registration"""
@@ -218,6 +216,7 @@ def save_registration_csv(reg):
     """Save registration to CSV"""
     row = [
         reg['id'],
+        reg.get('event_id', ''),
         reg['name'],
         reg['email'],
         reg['ticket'],
@@ -225,6 +224,7 @@ def save_registration_csv(reg):
         reg['sessions'],
         reg['paymentStatus'],
         reg['paymentMethod'],
+        json.dumps(reg.get('custom_fields', {})),
         reg['timestamp'],
     ]
 
@@ -234,6 +234,7 @@ def save_registration_csv(reg):
 
     return {
         'id': reg['id'],
+        'event_id': reg.get('event_id', ''),
         'name': reg['name'],
         'email': reg['email'],
         'ticket': reg['ticket'],
@@ -241,6 +242,7 @@ def save_registration_csv(reg):
         'sessions': reg['sessions'].split('|'),
         'paymentStatus': reg['paymentStatus'],
         'paymentMethod': reg['paymentMethod'],
+        'custom_fields': reg.get('custom_fields', {}),
         'timestamp': reg['timestamp'],
     }
 
@@ -296,6 +298,7 @@ def get_registrations_csv():
         for row in reader:
             registrations.append({
                 'id': row['id'],
+                'event_id': row.get('event_id', ''),
                 'name': row['name'],
                 'email': row['email'],
                 'ticket': row['ticket'],
@@ -303,6 +306,7 @@ def get_registrations_csv():
                 'sessions': [s for s in row['sessions'].split('|') if s],
                 'paymentStatus': row['paymentStatus'],
                 'paymentMethod': row['paymentMethod'],
+                'custom_fields': json.loads(row.get('custom_fields', '{}') or '{}'),
                 'timestamp': row['timestamp'],
             })
 
@@ -497,8 +501,8 @@ def delete_registration_csv(reg_id):
 def write_csv_file(registrations):
     """Write registrations back to CSV"""
     headers = [
-        'id', 'name', 'email', 'ticket', 'dietary',
-        'sessions', 'paymentStatus', 'paymentMethod', 'timestamp'
+        'id', 'event_id', 'name', 'email', 'ticket', 'dietary',
+        'sessions', 'paymentStatus', 'paymentMethod', 'custom_fields', 'timestamp'
     ]
 
     with open(CSV_FILE_PATH, 'w', newline='') as f:
@@ -509,6 +513,7 @@ def write_csv_file(registrations):
             sessions_str = '|'.join(reg['sessions']) if isinstance(reg['sessions'], list) else reg['sessions']
             writer.writerow({
                 'id': reg['id'],
+                'event_id': reg.get('event_id', ''),
                 'name': reg['name'],
                 'email': reg['email'],
                 'ticket': reg['ticket'],
@@ -516,13 +521,14 @@ def write_csv_file(registrations):
                 'sessions': sessions_str,
                 'paymentStatus': reg['paymentStatus'],
                 'paymentMethod': reg['paymentMethod'],
+                'custom_fields': json.dumps(reg.get('custom_fields', {})),
                 'timestamp': reg['timestamp'],
             })
 
 
-# ──────────────────────────────────────────────────────────────────
+#  ──────────────────
 # ADMIN USER OPERATIONS
-# ──────────────────────────────────────────────────────────────────
+#  ──────────────────
 
 def save_admin_user(username, password_hash):
     """Save admin user"""
@@ -620,9 +626,9 @@ def get_admin_user_by_username_csv(username):
     return None
 
 
-# ──────────────────────────────────────────────────────────────────
+#  ──────────────────
 # EVENT MANAGEMENT
-# ──────────────────────────────────────────────────────────────────
+#  ──────────────────
 
 def create_event(name, description, form_fields):
     """Create a new event"""

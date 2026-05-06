@@ -1,5 +1,3 @@
-/* ── Authentication Module for Admin Panel ──────────────────────── */
-
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -10,9 +8,8 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_key_change_this';
 const JWT_EXPIRY = '24h';
 
-/* ────────────────────────────────────────────────────────────────── */
-/* LOGIN ADMIN USER                                                  */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* LOGIN ADMIN USER */
 
 export async function loginAdmin(username, password) {
   try {
@@ -48,9 +45,9 @@ export async function loginAdmin(username, password) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* CREATE ADMIN USER                                                 */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* CREATE ADMIN USER */ 
+
 
 export async function createAdminUser(username, password) {
   try {
@@ -76,9 +73,8 @@ export async function createAdminUser(username, password) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* VERIFY JWT TOKEN MIDDLEWARE                                       */
-/* ────────────────────────────────────────────────────────────────── */
+/* VERIFY JWT TOKEN MIDDLEWARE     */
+
 
 export function verifyToken(req, res, next) {
   try {
@@ -97,9 +93,8 @@ export function verifyToken(req, res, next) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* DECODE TOKEN (for frontend validation)                            */
-/* ────────────────────────────────────────────────────────────────── */
+/* DECODE TOKEN (for frontend validation) */
+
 
 export function decodeToken(token) {
   try {
@@ -116,9 +111,9 @@ export function decodeToken(token) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* GENERATE DEFAULT ADMIN CREDENTIALS                                */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* GENERATE DEFAULT ADMIN CREDENTIALS*/
+
 
 export async function generateDefaultAdmin() {
   try {

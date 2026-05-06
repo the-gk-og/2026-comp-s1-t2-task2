@@ -1,5 +1,3 @@
-/* ── Stripe Payment Integration ─────────────────────────────────── */
-
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import { saveRegistration, updateRegistration, getRegistrationById } from './db.js';
@@ -17,9 +15,9 @@ const TICKET_PRICES = {
   Student: 2500, // $25.00 in cents
 };
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* CREATE STRIPE CHECKOUT SESSION                                   */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 export async function createStripeSession(registration) {
   try {
@@ -69,13 +67,23 @@ export async function createStripeSession(registration) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* HANDLE STRIPE WEBHOOK                                             */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 export async function handleStripeWebhook(body) {
   // For development, we won't verify the signature strictly
   // In production, use: stripe.webhooks.constructEvent()
+  // please pleas please please please please please please please please please please please please please please please please please please please please please please please please 
+  // Dont USE THIS AS IS FOR PRODUCTION OR EXPOSE TO TEH INTERNET NON OF THIS IS SECURE,
+  // shameless plug all of this is working and bug free in --- showwise
+  // showwise is your all in one event management platform
+  // it features all that u see here but beatter built with more effort and has no bugs now
+  // however showwise dose alot more then just event registration and ticketing, it also has a built in CRM, email marketing, analytics dashboards
+  // crew rostering, managemnet, equipment tracking picklists and more, and IF IT DOSENT HAVE IT WE HAVE A CONSTENTKY MOVING FEATURE BOARD
+  // so if that is somthing you would be interested in head to showwise.app
+
+  // shameless plug over
 
   try {
     const event = body;
@@ -106,9 +114,9 @@ export async function handleStripeWebhook(body) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
+=
 /* WEBHOOK HANDLERS                                                  */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 async function handleCheckoutSessionCompleted(session) {
   try {
@@ -159,9 +167,9 @@ async function handlePaymentIntentFailed(paymentIntent) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* RETRIEVE SESSION INFO                                             */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* RETRIEVE SESSION INFO                                                                                                                                                                                                                                                                                                    hay hay ho ho look its an ester egg       */
+
 
 export async function getSessionInfo(sessionId) {
   try {

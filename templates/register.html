@@ -36,6 +36,15 @@
               id="{{ field.name }}" 
               name="{{ field.name }}"
               placeholder="{{ field.placeholder or '' }}"
+              {% if field.validation and field.validation.pattern %}pattern="{{ field.validation.pattern }}"{% endif %}
+              {% if field.required %}required{% endif %}
+            />
+
+          {% elif field.type == 'date' %}
+            <input
+              type="date"
+              id="{{ field.name }}"
+              name="{{ field.name }}"
               {% if field.required %}required{% endif %}
             />
 
@@ -96,7 +105,7 @@
 
     <!-- Success Message -->
     <div id="successMessage" class="success-message" style="display: none;">
-      <h2>✓ Registration Successful!</h2>
+      <h2>Registration successful</h2>
       <p>Your registration has been received. You'll receive a confirmation email shortly.</p>
     </div>
   </div>
@@ -149,6 +158,16 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .form-field.has-error input,
+  .form-field.has-error textarea,
+  .form-field.has-error select,
+  .form-field.has-error .radio-group,
+  .form-field.has-error .checkbox-group {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    border-radius: 6px;
   }
 
   .form-field label {
@@ -263,44 +282,157 @@
 
 <script>
 const EVENT_ID = '{{ event.id }}';
+const FORM_FIELDS = {{ event.form_fields | tojson }};
+const STORAGE_KEY_ALL = 'event_submissions_all';
+const STORAGE_KEY_EVENT = `event_submissions_${EVENT_ID}`;
+const form = document.getElementById('eventForm');
 
-document.getElementById('eventForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+function clearErrors() {
+  document.querySelectorAll('.form-field').forEach((field) => field.classList.remove('has-error'));
+  document.querySelectorAll('.field-error').forEach((err) => {
+    err.textContent = '';
+    err.classList.remove('show');
+  });
+}
 
-  const formData = new FormData(e.target);
-  const data = Object.fromEntries(formData);
+function setError(fieldName, message) {
+  const fieldWrap = document.getElementById(`field-${fieldName}`);
+  const err = document.getElementById(`err-${fieldName}`);
+  if (fieldWrap) fieldWrap.classList.add('has-error');
+  if (err) {
+    err.textContent = message;
+    err.classList.add('show');
+  }
+}
 
-  // Convert checkbox values to array
-  const checkboxes = e.target.querySelectorAll('input[type="checkbox"]:checked');
-  checkboxes.forEach(cb => {
-    if (!data[cb.name]) {
-      data[cb.name] = [];
-    }
-    if (Array.isArray(data[cb.name])) {
-      data[cb.name].push(cb.value);
+function readFormData() {
+  const formData = new FormData(form);
+  const data = {};
+  for (const [key, value] of formData.entries()) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      if (!Array.isArray(data[key])) data[key] = [data[key]];
+      data[key].push(value);
     } else {
-      data[cb.name] = [data[cb.name], cb.value];
+      data[key] = value;
+    }
+  }
+
+  const allCheckboxGroups = new Set(
+    [...form.querySelectorAll('input[type="checkbox"]')].map((input) => input.name)
+  );
+  allCheckboxGroups.forEach((groupName) => {
+    const checked = [...form.querySelectorAll(`input[type="checkbox"][name="${groupName}"]:checked`)]
+      .map((el) => el.value);
+    data[groupName] = checked;
+  });
+
+  return data;
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validate(data) {
+  clearErrors();
+  let valid = true;
+
+  FORM_FIELDS.forEach((field) => {
+    const value = data[field.name];
+    const isEmpty = value === undefined
+      || value === null
+      || (Array.isArray(value) && value.length === 0)
+      || (!Array.isArray(value) && String(value).trim() === '');
+
+    if (field.required && isEmpty) {
+      setError(field.name, `${field.label} is required.`);
+      valid = false;
+      return;
+    }
+
+    if (isEmpty) return;
+
+    if (field.type === 'email' || field.validation?.kind === 'email') {
+      if (!isValidEmail(String(value))) {
+        setError(field.name, 'Enter a valid email address.');
+        valid = false;
+      }
+    }
+
+    if (field.type === 'date' || field.validation?.kind === 'date') {
+      const selectedDate = new Date(String(value));
+      if (Number.isNaN(selectedDate.getTime())) {
+        setError(field.name, 'Enter a valid date.');
+        valid = false;
+      } else if (field.validation?.noFuture) {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        if (selectedDate > now) {
+          setError(field.name, 'Date cannot be in the future.');
+          valid = false;
+        }
+      }
+    }
+
+    if (field.validation?.minLength && String(value).length < Number(field.validation.minLength)) {
+      setError(field.name, field.validation.message || `${field.label} is too short.`);
+      valid = false;
+    }
+
+    if (field.validation?.pattern) {
+      const regex = new RegExp(field.validation.pattern);
+      if (!regex.test(String(value))) {
+        setError(field.name, field.validation.message || `${field.label} format is invalid.`);
+        valid = false;
+      }
     }
   });
 
+  return valid;
+}
+
+function saveToLocalStorage(submission) {
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL) || '[]');
+  all.push(submission);
+  localStorage.setItem(STORAGE_KEY_ALL, JSON.stringify(all));
+
+  const byEvent = JSON.parse(localStorage.getItem(STORAGE_KEY_EVENT) || '[]');
+  byEvent.push(submission);
+  localStorage.setItem(STORAGE_KEY_EVENT, JSON.stringify(byEvent));
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = readFormData();
+  if (!validate(data)) return;
+
+  const submission = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+    event_id: EVENT_ID,
+    timestamp: new Date().toISOString(),
+    name: data.name || '',
+    email: data.email || '',
+    ticket: data.ticket || '',
+    dietary: data.dietary || '',
+    sessions: Array.isArray(data.sessions) ? data.sessions : [],
+    paymentStatus: data.paymentStatus || '',
+    ...data,
+  };
+
+  saveToLocalStorage(submission);
+
   try {
-    const response = await fetch(`/api/register/${EVENT_ID}`, {
+    await fetch(`/api/register/${EVENT_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(submission)
     });
-
-    if (response.ok) {
-      document.getElementById('eventForm').style.display = 'none';
-      document.getElementById('successMessage').style.display = 'block';
-    } else {
-      const error = await response.json();
-      alert('Registration failed: ' + (error.error || 'Unknown error'));
-    }
   } catch (err) {
-    console.error('Registration error:', err);
-    alert('Failed to register');
+    console.warn('Server registration failed; local submission saved.', err);
   }
+
+  form.style.display = 'none';
+  document.getElementById('successMessage').style.display = 'block';
 });
 </script>
 {% endblock %}

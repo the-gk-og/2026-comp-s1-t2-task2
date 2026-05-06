@@ -1,4 +1,4 @@
-/* ── RESET & BASE ─────────────────────────────────────────── */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -35,7 +35,7 @@ body {
   flex-direction: column;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
+/* HEADER   */
 .site-header {
   background: var(--ink);
   color: #fff;
@@ -112,7 +112,7 @@ body {
   color: #fff;
 }
 
-/* ── LAYOUT ──────────────────────────────────────────────── */
+/* LAYOUT   */
 .layout {
   max-width: 1400px;
   margin: 0 auto;
@@ -124,7 +124,7 @@ body {
   flex: 1;
 }
 
-/* ── PANEL LABELS ────────────────────────────────────────── */
+/* PANEL LABELS  */
 .panel-label { margin-bottom: 1.25rem; }
 .label-tag {
   font-family: var(--mono);
@@ -136,7 +136,7 @@ body {
   padding-bottom: 3px;
 }
 
-/* ── FORM PANEL ──────────────────────────────────────────── */
+/* FORM PANEL */
 .form-panel {
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -147,7 +147,7 @@ body {
   top: 72px;
 }
 
-/* ── FIELD GROUPS ────────────────────────────────────────── */
+/* FIELD GROUPS*/
 .field-group {
   margin-bottom: 1.4rem;
 }
@@ -200,7 +200,7 @@ select:focus {
   min-height: 1em;
 }
 
-/* ── TICKET CARDS ────────────────────────────────────────── */
+/* TICKET CARDS */
 .ticket-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -251,7 +251,7 @@ select:focus {
   color: #b0aba5;
 }
 
-/* ── SESSIONS ────────────────────────────────────────────── */
+/* SESSIONS */
 .session-list {
   display: flex;
   flex-direction: column;
@@ -310,7 +310,7 @@ select:focus {
 .session-text strong { display: block; font-size: .8rem; font-weight: 500; }
 .session-text em { font-family: var(--mono); font-size: .65rem; color: var(--ink-light); font-style: normal; }
 
-/* ── PAYMENT CHIPS ───────────────────────────────────────── */
+/* PAYMENT CHIPS */
 .payment-options {
   display: flex;
   gap: .5rem;
@@ -341,7 +341,7 @@ select:focus {
   color: #fff;
 }
 
-/* ── FORM ACTIONS ────────────────────────────────────────── */
+/* FORM ACTIONS */
 .form-actions {
   display: flex;
   gap: .75rem;
@@ -379,7 +379,7 @@ select:focus {
 }
 .btn-cancel:hover { border-color: var(--ink-mid); }
 
-/* ── LIST PANEL ──────────────────────────────────────────── */
+/* LIST PANEL*/
 .list-panel {
   min-height: 300px;
 }
@@ -392,7 +392,7 @@ select:focus {
   gap: 1rem;
 }
 
-/* ── SEARCH ──────────────────────────────────────────────── */
+/* SEARCH   */
 .search-wrap {
   position: relative;
   flex: 1;
@@ -423,7 +423,7 @@ select:focus {
 }
 .search-wrap input:focus { border-color: var(--ink-mid); }
 
-/* ── EMPTY STATE ─────────────────────────────────────────── */
+/* EMPTY STATE  */
 .empty-state {
   text-align: center;
   padding: 5rem 2rem;
@@ -442,14 +442,14 @@ select:focus {
   line-height: 1.7;
 }
 
-/* ── CARDS GRID ──────────────────────────────────────────── */
+/*CARDS GRID  */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
 }
 
-/* ── REGISTRATION CARD ───────────────────────────────────── */
+/* REGISTRATION CARD*/
 .reg-card {
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -586,7 +586,7 @@ select:focus {
 .btn-delete { color: var(--accent); border-color: var(--accent-lt); }
 .btn-delete:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-/* ── TOAST ───────────────────────────────────────────────── */
+/* ── TOAST  ─ */
 .toast {
   position: fixed;
   bottom: 2rem;
@@ -611,7 +611,7 @@ select:focus {
   transform: translateY(0);
 }
 
-/* ── MODAL ───────────────────────────────────────────────── */
+/* MODAL */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -689,8 +689,7 @@ select:focus {
 }
 .btn-modal-confirm:hover { background: #a5350f; }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-/* ── PAYMENT MODAL ───────────────────────────────────────────────── */
+
 .payment-method-btn {
   display: block;
   width: 100%;
@@ -714,7 +713,7 @@ select:focus {
   transform: scale(0.98);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────── */
+/* RESPONSIVE*/
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;

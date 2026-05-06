@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <!-- ── HEADER ─────────────────────────────────────────────── -->
+  <!-- HEADER  -->
   <header class="site-header">
     <div class="header-inner">
       <div class="header-brand">
@@ -30,7 +30,7 @@
 
   <main class="layout">
 
-    <!-- ── LEFT: FORM PANEL ───────────────────────────────────── -->
+    <!-- LEFT: FORM PANEL -->
     <aside class="form-panel">
       <div class="panel-label">
         <span class="label-tag">NEW REGISTRATION</span>
@@ -182,7 +182,7 @@
       </form>
     </aside>
 
-    <!-- ── RIGHT: REGISTRATIONS PANEL ────────────────────────── -->
+    <!--RIGHT: REGISTRATIONS PANEL-->
     <section class="list-panel">
       <div class="list-header">
         <div class="panel-label">
@@ -207,10 +207,10 @@
 
   </main>
 
-  <!-- ── TOAST ──────────────────────────────────────────────── -->
+  <!-- ── TOAST   -->
   <div class="toast" id="toast"></div>
 
-  <!-- ── DELETE MODAL ───────────────────────────────────────── -->
+  <!-- ── DELETE MODAL  ─ -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <p class="modal-msg">Remove this registration?<br/><span id="modalName"></span></p>
@@ -221,17 +221,17 @@
     </div>
   </div>
 
-  <!-- ── PAYMENT MODAL ─────────────────────────────────────────────── -->
+  <!-- ── PAYMENT MODAL  ─────── -->
   <div class="modal-overlay" id="paymentModal">
     <div class="modal">
       <p class="modal-msg">Choose Payment Method<br/><span id="paymentModalSubtitle">General Ticket - $50.00</span></p>
       <div style="text-align: center; margin: 1.5rem 0;">
         <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--ink-mid);">How would you like to pay?</p>
         <button class="payment-method-btn" id="stripeBtn">
-          💳 Pay with Card (Stripe)
+          Pay with Card (Stripe)
         </button>
         <button class="payment-method-btn" id="complimentaryBtn" style="background: var(--blue); color: white; margin-top: 0.75rem;">
-          🎁 Complimentary / Cash
+          Complimentary / Cash
         </button>
       </div>
       <div class="modal-actions">

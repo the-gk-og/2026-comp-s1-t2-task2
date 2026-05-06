@@ -1,7 +1,3 @@
-"""
-Authentication Module for Admin Panel
-"""
-
 import os
 import bcrypt
 from flask import jsonify, request

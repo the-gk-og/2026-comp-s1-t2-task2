@@ -1,7 +1,3 @@
-"""
-Stripe Payment Integration
-"""
-
 import os
 import stripe
 from flask import request, jsonify

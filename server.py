@@ -45,14 +45,14 @@ create_event_routes(app)
 PORT = int(os.getenv('PORT', 3001))
 
 
-# ──────────────────────────────────────────────────────────────────
+
 # SERVE HTML PAGES
-# ──────────────────────────────────────────────────────────────────
+
 
 @app.route('/')
 def index():
-    """Serve events listing page"""
-    return render_template('index.html')
+    """Serve a blank landing page"""
+    return '', 204
 
 
 @app.route('/event/<event_id>')
@@ -67,14 +67,14 @@ def register_event(event_id):
 
 
 @app.route('/admin')
-def admin_login():
-    """Serve admin login page"""
-    return render_template('admin/login.html')
+def admin_dashboard():
+    """Serve admin dashboard"""
+    return render_template('admin/events.html')
 
 
 @app.route('/admin/dashboard')
-def admin_dashboard():
-    """Serve admin dashboard"""
+def admin_dashboard_legacy():
+    """Backwards-compatible dashboard route"""
     return render_template('admin/events.html')
 
 
@@ -97,9 +97,8 @@ def health_check():
     })
 
 
-# ──────────────────────────────────────────────────────────────────
 # REGISTRATIONS ENDPOINTS
-# ──────────────────────────────────────────────────────────────────
+
 
 @app.route('/api/registrations', methods=['GET'])
 def get_all_registrations():
@@ -236,9 +235,9 @@ def delete_single_registration(registration_id):
         return jsonify({'error': 'Failed to delete registration'}), 500
 
 
-# ──────────────────────────────────────────────────────────────────
+
 # EMAIL ENDPOINTS
-# ──────────────────────────────────────────────────────────────────
+
 
 @app.route('/api/resend-email/<registration_id>', methods=['POST'])
 def resend_email(registration_id):
@@ -261,9 +260,9 @@ def resend_email(registration_id):
         return jsonify({'error': 'Failed to send email'}), 500
 
 
-# ──────────────────────────────────────────────────────────────────
+
 # INFO ENDPOINTS
-# ──────────────────────────────────────────────────────────────────
+
 
 @app.route('/api/wallet-setup', methods=['GET'])
 def wallet_setup_info():
@@ -271,9 +270,9 @@ def wallet_setup_info():
     return jsonify(get_wallet_setup_instructions())
 
 
-# ──────────────────────────────────────────────────────────────────
+
 # ERROR HANDLERS
-# ──────────────────────────────────────────────────────────────────
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -285,9 +284,9 @@ def server_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
 
-# ──────────────────────────────────────────────────────────────────
+
 # MAIN
-# ──────────────────────────────────────────────────────────────────
+
 
 if __name__ == '__main__':
 

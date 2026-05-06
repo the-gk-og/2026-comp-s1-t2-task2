@@ -1,4 +1,4 @@
-/* ── Email Notifications with Google Wallet Support ──────────────── */
+/*Email Notifications with Google Wallet Support*/
 
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
@@ -17,9 +17,9 @@ const transporter = nodemailer.createTransport({
 
 const EMAIL_FROM = process.env.EMAIL_FROM || process.env.EMAIL_USER;
 
-/* ────────────────────────────────────────────────────────────────── */
-/* SEND CONFIRMATION EMAIL                                           */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* SEND CONFIRMATION EMAIL */
+
 
 export async function sendConfirmationEmail(registration) {
   try {
@@ -41,9 +41,9 @@ export async function sendConfirmationEmail(registration) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* SEND TICKET EMAIL WITH GOOGLE WALLET                              */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* SEND TICKET EMAIL WITH GOOGLE WALLET */
+
 
 export async function sendTicketEmail(registration) {
   try {
@@ -82,9 +82,8 @@ export async function sendTicketEmail(registration) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* SEND ADMIN NOTIFICATION                                           */
-/* ────────────────────────────────────────────────────────────────── */
+/* SEND ADMIN NOTIFICATION */
+
 
 export async function sendAdminNotification(registration) {
   try {
@@ -107,9 +106,9 @@ export async function sendAdminNotification(registration) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* EMAIL TEMPLATE GENERATORS                                         */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* EMAIL TEMPLATE GENERATORS */
+
 
 function generateConfirmationEmailHtml(reg) {
   const date = new Date(reg.timestamp).toLocaleDateString('en-US', {
@@ -211,7 +210,7 @@ function generateTicketEmailHtml(reg) {
           </div>
           
           <div class="ticket">
-            <div class="ticket-header">🎫 Event Ticket</div>
+            <div class="ticket-header">Event Ticket</div>
             <div class="ticket-detail">
               <span class="ticket-label">Name:</span>
               <span class="ticket-value">${escapeHtml(reg.name)}</span>
@@ -241,8 +240,8 @@ function generateTicketEmailHtml(reg) {
           <div class="content">
             <p><strong>Add to Your Digital Wallet:</strong></p>
             <p>
-              <a href="#" class="wallet-button">📱 Add to Apple Wallet</a><br>
-              <a href="#" class="wallet-button">▶️ Add to Google Wallet</a>
+              <a href="#" class="wallet-button">Add to Apple Wallet</a><br>
+              <a href="#" class="wallet-button">▶Add to Google Wallet</a>
             </p>
             
             <p><strong>Your Sessions:</strong></p>
@@ -322,9 +321,9 @@ function generateAdminNotificationHtml(reg) {
   `;
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* UTILITY FUNCTIONS                                                 */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* UTILITY FUNCTIONS  */
+
 
 function escapeHtml(text) {
   const map = {
@@ -337,9 +336,9 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* TEST EMAIL SENDING                                                */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 export async function testEmailConnection() {
   try {

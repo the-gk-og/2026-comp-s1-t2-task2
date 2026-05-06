@@ -1,5 +1,3 @@
-/* ── Google Wallet Integration ──────────────────────────────────── */
-
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -7,9 +5,9 @@ dotenv.config();
 const ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID;
 const CLASS_ID = process.env.GOOGLE_WALLET_CLASS_ID;
 
-/* ────────────────────────────────────────────────────────────────── */
-/* GENERATE GOOGLE WALLET PASS                                       */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* GENERATE GOOGLE WALLET PASS*/
+
 
 export async function generateGoogleWalletPass(registration) {
   try {
@@ -28,8 +26,6 @@ export async function generateGoogleWalletPass(registration) {
       return null;
     }
 
-    // Placeholder implementation
-    // See: https://developers.google.com/wallet/generic/rest/guides/overview
     
     const walletData = {
       iss: ISSUER_ID,
@@ -90,9 +86,9 @@ export async function generateGoogleWalletPass(registration) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* CREATE GOOGLE WALLET LINK                                         */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* CREATE GOOGLE WALLET LINK */
+
 
 export function generateGoogleWalletLink(registration) {
   // Format: https://pay.google.com/gp/v/save/{jwt}
@@ -109,9 +105,9 @@ export function generateGoogleWalletLink(registration) {
   return `${baseUrl}${jwtToken}`;
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* APPLE WALLET PASS GENERATION (PKPass Format)                      */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* APPLE WALLET PASS GENERATION (PKPass Format)  */
+
 
 export function generateAppleWalletPass(registration) {
   // This would create a PKPass file (ZIP format)
@@ -187,9 +183,9 @@ export function generateAppleWalletPass(registration) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────── */
-/* WALLET CREDENTIAL SETUP INSTRUCTIONS                              */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* WALLET CREDENTIAL SETUP INSTRUCTIONS       */
+
 
 export function getWalletSetupInstructions() {
   return {
@@ -217,3 +213,6 @@ export function getWalletSetupInstructions() {
     },
   };
 }
+
+
+// this was also stolen from my other project

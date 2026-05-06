@@ -1,5 +1,3 @@
-/* ── RSVP Event Registration System — Backend Server ───────────────── */
-
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -36,9 +34,9 @@ app.use(express.static(__dirname));
 // Initialize database
 await initDb();
 
-/* ────────────────────────────────────────────────────────────────── */
-/* API ROUTES                                                         */
-/* ────────────────────────────────────────────────────────────────── */
+
+/* API ROUTES */
+
 
 /**
  * GET /api/registrations
@@ -178,9 +176,9 @@ app.delete('/api/registrations/:id', async (req, res) => {
   }
 });
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* STRIPE WEBHOOK                                                    */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 app.post('/webhook/stripe', async (req, res) => {
   try {
@@ -192,9 +190,9 @@ app.post('/webhook/stripe', async (req, res) => {
   }
 });
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* ADMIN AUTHENTICATION ROUTES                                       */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 /**
  * POST /api/admin/login
@@ -236,9 +234,9 @@ app.post('/api/admin/create-user', verifyToken, async (req, res) => {
   }
 });
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* ADMIN DASHBOARD ROUTES (Protected)                                 */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 /**
  * GET /admin
@@ -248,9 +246,9 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* EMAIL RESEND ROUTE                                                 */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 /**
  * POST /api/resend-email/:id
@@ -276,20 +274,19 @@ app.post('/api/resend-email/:id', async (req, res) => {
   }
 });
 
-/* ────────────────────────────────────────────────────────────────── */
+
 /* HEALTH CHECK                                                       */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date().toISOString() });
 });
 
-/* ────────────────────────────────────────────────────────────────── */
 /* START SERVER                                                       */
-/* ────────────────────────────────────────────────────────────────── */
+
 
 app.listen(PORT, () => {
-  console.log(`🎫 RSVP Event Registration Server running on http://localhost:${PORT}`);
-  console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
-  console.log(`🗄️  Database Type: ${process.env.DB_TYPE}`);
+  console.log(`RSVP Event Registration Server running on http://localhost:${PORT}`);
+  console.log(`Admin Dashboard: http://localhost:${PORT}/admin`);
+  console.log(`Database Type: ${process.env.DB_TYPE}`);
 });

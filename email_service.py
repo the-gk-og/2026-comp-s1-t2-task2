@@ -1,8 +1,3 @@
-"""
-Email Notifications Service
-Handles registration confirmations and ticket delivery
-"""
-
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -27,7 +22,7 @@ SEND_CONFIRMATION_EMAIL = os.getenv('SEND_CONFIRMATION_EMAIL', 'true').lower() =
 def send_email(to_email, subject, html_content, attachments=None):
     """Send email using SMTP"""
     if not SEND_CONFIRMATION_EMAIL:
-        print(f"📧 Email sending disabled - skipping {subject}")
+        print(f"Email sending disabled - skipping {subject}")
         return True
     
     try:
@@ -51,16 +46,16 @@ def send_email(to_email, subject, html_content, attachments=None):
 
         # Send email via SMTP
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.starttls()  # REQUIRED for Zoho on port 587
+            server.starttls()  
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(EMAIL_FROM, to_email, msg.as_string())
 
 
-        print(f"✅ Email sent to {to_email} - {subject}")
+        print(f"Email sent to {to_email} - {subject}")
         return True
 
     except Exception as e:
-        print(f"❌ Error sending email: {e}")
+        print(f" Error sending email: {e}")
         return False
 
 
@@ -68,7 +63,7 @@ def send_confirmation_email(registration, event=None):
     """Send confirmation email with event details"""
     try:
         if not registration.get('email'):
-            print("⚠️ No email address provided")
+            print("No email address provided")
             return False
         
         html_content = generate_confirmation_email_html(registration, event)
@@ -76,12 +71,12 @@ def send_confirmation_email(registration, event=None):
         
         send_email(
             registration['email'],
-            f'Registration Confirmed - {event_name} 🎉',
+            f'Registration Confirmed - {event_name} ',
             html_content
         )
         return True
     except Exception as e:
-        print(f"❌ Error sending confirmation email: {e}")
+        print(f"Error sending confirmation email: {e}")
         return False
 
 
@@ -115,9 +110,9 @@ def send_admin_notification(registration):
         print(f"Error sending admin notification: {e}")
 
 
-# ──────────────────────────────────────────────────────────────────
+
 # EMAIL TEMPLATES
-# ──────────────────────────────────────────────────────────────────
+
 
 def generate_confirmation_email_html(reg, event=None):
     """Generate confirmation email HTML"""
@@ -255,7 +250,7 @@ def generate_ticket_email_html(reg):
           </div>
           
           <div class="ticket">
-            <div class="ticket-header">🎫 Event Ticket</div>
+            <div class="ticket-header">Event Ticket</div>
             <div class="ticket-detail">
               <span class="ticket-label">Name:</span>
               <span class="ticket-value">{escape_html(reg['name'])}</span>
@@ -280,8 +275,8 @@ def generate_ticket_email_html(reg):
           <div class="content">
             <p><strong>Add to Your Digital Wallet:</strong></p>
             <p>
-              <a href="#" class="wallet-button">📱 Add to Apple Wallet</a><br>
-              <a href="#" class="wallet-button">▶️ Add to Google Wallet</a>
+              <a href="#" class="wallet-button">Add to Apple Wallet</a><br>
+              <a href="#" class="wallet-button">▶Add to Google Wallet</a>
             </p>
             
             <p><strong>Your Sessions:</strong></p>
@@ -380,16 +375,16 @@ def escape_html(text):
 def test_email_connection():
     """Test email connection"""
     if not SEND_CONFIRMATION_EMAIL:
-        print("📧 Email sending is disabled in .env")
+        print("Email sending is disabled in .env")
         return False
     
     try:
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
             server.login(SMTP_USER, SMTP_PASSWORD)
-        print(f"✅ Email service connected to {SMTP_HOST}:{SMTP_PORT}")
+        print(f"Email service connected to {SMTP_HOST}:{SMTP_PORT}")
         return True
     except Exception as e:
-        print(f"❌ Email service connection failed: {e}")
+        print(f"Email service connection failed: {e}")
         print(f"   Check your .env settings:")
         print(f"   SMTP_HOST={SMTP_HOST}")
         print(f"   SMTP_PORT={SMTP_PORT}")

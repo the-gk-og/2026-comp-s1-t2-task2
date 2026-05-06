@@ -50,7 +50,7 @@
       min-height: 100vh;
     }
 
-    /* ── LOGIN PAGE ──────────────────────────────────────────────── */
+    /*LOGIN PAGE*/
     .login-page {
       display: flex;
       align-items: center;
@@ -162,7 +162,7 @@
       display: block;
     }
 
-    /* ── ADMIN DASHBOARD ─────────────────────────────────────────── */
+    /*ADMIN DASHBOARD*/
     .admin-page {
       display: none;
       min-height: 100vh;
@@ -287,7 +287,7 @@
       display: block;
     }
 
-    /* ── TABLES & DATA ───────────────────────────────────────────── */
+    /*TABLES & DATA*/
     .registrations-table {
       width: 100%;
       border-collapse: collapse;
@@ -388,7 +388,7 @@
       border-color: var(--accent);
     }
 
-    /* ── STATS ───────────────────────────────────────────────────── */
+    /*STATS*/
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -419,7 +419,7 @@
       color: var(--accent);
     }
 
-    /* ── EMPTY STATE ─────────────────────────────────────────────── */
+    /*EMPTY STATE*/
     .empty-state {
       text-align: center;
       padding: 3rem 2rem;
@@ -432,7 +432,7 @@
       opacity: 0.5;
     }
 
-    /* ── TOAST ───────────────────────────────────────────────────── */
+    /*TOAST*/
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -456,7 +456,7 @@
       transform: translateY(0);
     }
 
-    /* ── RESPONSIVE ──────────────────────────────────────────────── */
+    /*  RESPONSIVE */
     @media (max-width: 900px) {
       .admin-layout {
         grid-template-columns: 1fr;
@@ -631,7 +631,7 @@
             </div>
 
             <div class="stat-card">
-              <div class="stat-label">Revenue (USD)</div>
+              <div class="stat-label">Revenue (AUD)</div>
               <div class="stat-value" id="totalRevenue">$0</div>
             </div>
 
@@ -671,7 +671,7 @@
             </p>
 
             <button class="btn-small" id="exportAllBtn" style="margin-top: 2rem; background: var(--accent); color: white; border-color: var(--accent);">
-              📥 Export All Data
+              Export All Data
             </button>
           </div>
         </section>
@@ -683,11 +683,11 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    /* ── STATE ───────────────────────────────────────────────────── */
+    /*STATE */
     let authToken = localStorage.getItem('adminToken');
     let registrations = [];
 
-    /* ── LOGIN ───────────────────────────────────────────────────── */
+    /*LOGIN*/
     const loginForm = document.getElementById('loginForm');
     const loginError = document.getElementById('loginError');
     const loginPage = document.getElementById('loginPage');
@@ -726,7 +726,7 @@
       }
     });
 
-    /* ── LOGOUT ──────────────────────────────────────────────────── */
+    /*LOGOUT*/
     document.getElementById('logoutBtn').addEventListener('click', () => {
       authToken = null;
       localStorage.removeItem('adminToken');
@@ -736,7 +736,7 @@
       loginError.classList.remove('show');
     });
 
-    /* ── NAVIGATION ──────────────────────────────────────────────── */
+    /*  NAVIGATION   */
     document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.addEventListener('click', () => {
         const sectionId = btn.dataset.section;
@@ -749,7 +749,7 @@
       });
     });
 
-    /* ── LOAD REGISTRATIONS ──────────────────────────────────────── */
+    /*  LOAD REGISTRATIONS   */
     async function loadRegistrations() {
       try {
         const response = await fetch('/api/registrations');
@@ -788,7 +788,7 @@
       }
     }
 
-    /* ── LOAD DASHBOARD ──────────────────────────────────────────– */
+    /*LOAD DASHBOARD  */
     async function loadDashboard() {
       try {
         const totalRegs = registrations.length;
@@ -827,7 +827,7 @@
       }
     }
 
-    /* ── HELPER FUNCTIONS ────────────────────────────────────────── */
+    /*  HELPER FUNCTIONS  */
     function escapeHtml(str) {
       const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
       return String(str).replace(/[&<>"']/g, (m) => map[m]);
@@ -920,7 +920,7 @@
       }
     });
 
-    /* ── INIT ────────────────────────────────────────────────────– */
+    /* INIT */
     if (authToken) {
       loginPage.style.display = 'none';
       adminPage.classList.add('active');

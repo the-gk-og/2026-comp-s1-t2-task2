@@ -1,15 +1,13 @@
-/* ── EVENT REGISTRATION — app.js ─────────────────────────── */
-
 const STORAGE_KEY = 'rsvp_registrations';
 const API_URL = '/api';  // Use relative path - works with Flask
 let stripe = null;
 let stripeElements = null;
 
-/* ── STATE ───────────────────────────────────────────────── */
+/* STATE  */
 let registrations = [];
 let deleteTargetId = null;
 
-/* ── DOM REFS ────────────────────────────────────────────── */
+/* DOM REFS   */
 const form        = document.getElementById('regForm');
 const editIdInput = document.getElementById('editId');
 const submitBtn   = document.getElementById('submitBtn');
@@ -26,7 +24,7 @@ const modalName   = document.getElementById('modalName');
 const modalCancel = document.getElementById('modalCancel');
 const modalConfirm= document.getElementById('modalConfirm');
 
-/* ── INIT ────────────────────────────────────────────────── */
+/* INIT  */
 async function init() {
   // Try to load from API first, fall back to localStorage
   try {
@@ -47,7 +45,7 @@ async function init() {
   checkPaymentSuccess();
 }
 
-/* ── CHECK PAYMENT SUCCESS ───────────────────────────────── */
+/* CHECK PAYMENT SUCCESS */
 function checkPaymentSuccess() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('payment') === 'success') {
@@ -58,12 +56,12 @@ function checkPaymentSuccess() {
   }
 }
 
-/* ── PERSIST ─────────────────────────────────────────────── */
+/* PERSIST */
 function save() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(registrations));
 }
 
-/* ── PAYMENT MODAL ───────────────────────────────────────── */
+/* PAYMENT MODAL */
 const paymentModal = document.getElementById('paymentModal');
 const paymentCancel = document.getElementById('paymentCancel');
 const stripeBtn = document.getElementById('stripeBtn');
@@ -92,7 +90,7 @@ paymentModal.addEventListener('click', (e) => {
   if (e.target === paymentModal) closePaymentModal();
 });
 
-/* ── STRIPE PAYMENT ──────────────────────────────────────── */
+/* STRIPE PAYMENT   */
 stripeBtn.addEventListener('click', async () => {
   try {
     closePaymentModal();
@@ -121,7 +119,7 @@ stripeBtn.addEventListener('click', async () => {
   }
 });
 
-/* ── COMPLIMENTARY / CASH PAYMENT ────────────────────────── */
+/* COMPLIMENTARY / CASH PAYMENT*/
 complimentaryBtn.addEventListener('click', async () => {
   try {
     closePaymentModal();
@@ -203,7 +201,7 @@ function validate(data) {
   return valid;
 }
 
-/* ── READ FORM ───────────────────────────────────────────── */
+/* READ FORM */
 function readForm() {
   const ticketRadio  = document.querySelector('input[name="ticket"]:checked');
   const paymentRadio = document.querySelector('input[name="payment"]:checked');
@@ -219,7 +217,7 @@ function readForm() {
   };
 }
 
-/* ── RESET FORM ──────────────────────────────────────────── */
+/*RESET FORM  */
 function resetForm() {
   form.reset();
   clearErrors();
@@ -230,7 +228,7 @@ function resetForm() {
   document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
 }
 
-/* ── POPULATE FORM FOR EDIT ──────────────────────────────── */
+/* POPULATE FORM FOR EDIT*/
 function populateForm(reg) {
   document.getElementById('name').value  = reg.name;
   document.getElementById('email').value = reg.email;
@@ -254,7 +252,7 @@ function populateForm(reg) {
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ── SUBMIT ──────────────────────────────────────────────── */
+/* SUBMIT   */
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const data = readForm();
@@ -265,12 +263,12 @@ form.addEventListener('submit', (e) => {
   showPaymentModal(data);
 });
 
-/* ── CANCEL EDIT ─────────────────────────────────────────── */
+/* CANCEL EDIT */
 cancelBtn.addEventListener('click', () => {
   resetForm();
 });
 
-/* ── RENDER CARDS ────────────────────────────────────────── */
+/* RENDER CARDS */
 function renderCards(filter = '') {
   const q = filter.toLowerCase().trim();
 
@@ -309,7 +307,7 @@ function renderCards(filter = '') {
   });
 }
 
-/* ── BUILD CARD HTML ─────────────────────────────────────── */
+/*BUILD CARD HTML */
 function buildCard(r) {
   const ts = new Date(r.timestamp);
   const dateStr = ts.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -356,14 +354,14 @@ function buildCard(r) {
   `;
 }
 
-/* ── EDIT ────────────────────────────────────────────────── */
+/* EDIT  */
 function handleEdit(id) {
   const reg = registrations.find(r => r.id === id);
   if (!reg) return;
   populateForm(reg);
 }
 
-/* ── DELETE ──────────────────────────────────────────────── */
+/* DELETE   */
 function handleDeletePrompt(id) {
   const reg = registrations.find(r => r.id === id);
   if (!reg) return;
@@ -407,12 +405,12 @@ function closeModal() {
   deleteTargetId = null;
 }
 
-/* ── SEARCH ──────────────────────────────────────────────── */
+/* SEARCH   */
 searchInput.addEventListener('input', () => {
   renderCards(searchInput.value);
 });
 
-/* ── CSV EXPORT ──────────────────────────────────────────── */
+/*CSV EXPORT */
 exportBtn.addEventListener('click', () => {
   if (registrations.length === 0) {
     showToast('No registrations to export.');
@@ -444,7 +442,7 @@ exportBtn.addEventListener('click', () => {
   showToast(`Exported ${registrations.length} registration${registrations.length !== 1 ? 's' : ''}.`);
 });
 
-/* ── HELPERS ─────────────────────────────────────────────── */
+/* HELPERS*/
 function csvCell(val) {
   const str = String(val ?? '');
   return str.includes(',') || str.includes('"') || str.includes('\n')
@@ -473,5 +471,5 @@ function showToast(msg) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
 }
 
-/* ── BOOT ────────────────────────────────────────────────── */
+/* BOOT */
 init();
