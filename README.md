@@ -60,7 +60,6 @@ Default server: `http://localhost:3001`
   - Edit/delete submissions
   - Download CSV
 
-## Legacy Node Files
+woops forgot to save read me
 
-This repo also contains Node files (`server.js`, `email.js`, etc.) from an earlier version.
-Current primary app flow uses the Flask backend (`server.py`).
+but design is lacking becasue i didnot enjoy and have that much of a vision
