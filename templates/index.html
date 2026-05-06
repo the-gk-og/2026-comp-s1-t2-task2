@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Events - RSVP{% endblock %}
+
+{% block content %}
+<main class="events-page">
+  <div class="events-header">
+    <h1>Upcoming Events</h1>
+    <p>Select an event to register</p>
+  </div>
+
+  <div id="eventsList" class="events-grid">
+    <!-- Events loaded here -->
+  </div>
+</main>
+
+<style>
+  .events-page {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, var(--surface) 0%, #f5f1e8 100%);
+  }
+
+  .events-header {
+    max-width: 1200px;
+    margin: 0 auto 3rem;
+    text-align: center;
+  }
+
+  .events-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--ink);
+  }
+
+  .events-header p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .events-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+
+  .event-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+  }
+
+  .event-card-header {
+    height: 150px;
+    background: linear-gradient(135deg, var(--accent) 0%, #d63a1c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .event-card-content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .event-card-content h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.3rem;
+    color: var(--ink);
+  }
+
+  .event-card-content p {
+    margin: 0 0 1rem 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    flex: 1;
+  }
+
+  .event-fields-count {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .event-cta {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .event-cta:hover {
+    background: #b63a16;
+    transform: translateY(-2px);
+  }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .empty-state p {
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .events-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .events-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+const API_URL = '/api';
+
+async function loadEvents() {
+  try {
+    const response = await fetch(`${API_URL}/events`);
+    const events = await response.json();
+    renderEvents(events);
+  } catch (err) {
+    console.error('Failed to load events:', err);
+    document.getElementById('eventsList').innerHTML = '<div class="empty-state"><p>Failed to load events</p></div>';
+  }
+}
+
+function renderEvents(events) {
+  const list = document.getElementById('eventsList');
+  list.innerHTML = '';
+
+  if (events.length === 0) {
+    list.innerHTML = '<div class="empty-state"><p>No events available yet</p></div>';
+    return;
+  }
+
+  const activeEvents = events.filter(e => e.is_active);
+
+  if (activeEvents.length === 0) {
+    list.innerHTML = '<div class="empty-state"><p>No active events at the moment</p></div>';
+    return;
+  }
+
+  activeEvents.forEach(event => {
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.innerHTML = `
+      <div class="event-card-header"></div>
+      <div class="event-card-content">
+        <h3>${escapeHtml(event.name)}</h3>
+        <p>${escapeHtml(event.description)}</p>
+        <div class="event-fields-count">${event.form_fields.length} registration fields</div>
+        <button class="event-cta" onclick="goToEvent('${event.id}')">Register →</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function goToEvent(eventId) {
+  window.location.href = `/event/${eventId}`;
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+loadEvents();
+</script>
+{% endblock %}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSVP — Event Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">RSVP</span>
+        <span class="brand-sub">Event Registration System</span>
+      </div>
+      <div class="header-meta">
+        <span id="totalCount">0 registrations</span>
+        <button class="btn-export" id="exportBtn" title="Export CSV">
+          ↓ Export CSV
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- ── LEFT: FORM PANEL ───────────────────────────────────── -->
+    <aside class="form-panel">
+      <div class="panel-label">
+        <span class="label-tag">NEW REGISTRATION</span>
+      </div>
+
+      <form id="regForm" novalidate>
+        <input type="hidden" id="editId" value="" />
+
+        <!-- Name -->
+        <div class="field-group" id="fg-name">
+          <label for="name">Full Name <span class="req">*</span></label>
+          <input type="text" id="name" placeholder="e.g. Alex Rivera" autocomplete="off" />
+          <span class="field-error" id="err-name"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="field-group" id="fg-email">
+          <label for="email">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="alex@example.com" autocomplete="off" />
+          <span class="field-error" id="err-email"></span>
+        </div>
+
+        <!-- Ticket Type -->
+        <div class="field-group" id="fg-ticket">
+          <label>Ticket Type <span class="req">*</span></label>
+          <div class="ticket-options">
+            <label class="ticket-card">
+              <input type="radio" name="ticket" value="General" />
+              <span class="ticket-inner">
+                <span class="ticket-title">General</span>
+                <span class="ticket-price">Standard access</span>
+              </span>
+            </label>
+            <label class="ticket-card">
+              <input type="radio" name="ticket" value="VIP" />
+              <span class="ticket-inner">
+                <span class="ticket-title">VIP</span>
+                <span class="ticket-price">Premium access</span>
+              </span>
+            </label>
+            <label class="ticket-card">
+              <input type="radio" name="ticket" value="Student" />
+              <span class="ticket-inner">
+                <span class="ticket-title">Student</span>
+                <span class="ticket-price">Concession rate</span>
+              </span>
+            </label>
+          </div>
+          <span class="field-error" id="err-ticket"></span>
+        </div>
+
+        <!-- Dietary Requirements -->
+        <div class="field-group" id="fg-dietary">
+          <label for="dietary">Dietary Requirements</label>
+          <select id="dietary">
+            <option value="None">No requirements</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Gluten-Free">Gluten-Free</option>
+            <option value="Halal">Halal</option>
+            <option value="Kosher">Kosher</option>
+            <option value="Nut Allergy">Nut Allergy</option>
+            <option value="Other">Other (see notes)</option>
+          </select>
+        </div>
+
+        <!-- Sessions -->
+        <div class="field-group" id="fg-sessions">
+          <label>Sessions <span class="req">*</span></label>
+          <div class="session-list">
+            <label class="session-item">
+              <input type="checkbox" name="session" value="Opening Keynote" />
+              <span class="session-check"></span>
+              <span class="session-text">
+                <strong>Opening Keynote</strong>
+                <em>9:00 AM — Main Hall</em>
+              </span>
+            </label>
+            <label class="session-item">
+              <input type="checkbox" name="session" value="Workshop A" />
+              <span class="session-check"></span>
+              <span class="session-text">
+                <strong>Workshop A: Design Systems</strong>
+                <em>11:00 AM — Room 1</em>
+              </span>
+            </label>
+            <label class="session-item">
+              <input type="checkbox" name="session" value="Workshop B" />
+              <span class="session-check"></span>
+              <span class="session-text">
+                <strong>Workshop B: Future of Work</strong>
+                <em>11:00 AM — Room 2</em>
+              </span>
+            </label>
+            <label class="session-item">
+              <input type="checkbox" name="session" value="Lunch Panel" />
+              <span class="session-check"></span>
+              <span class="session-text">
+                <strong>Lunch Panel</strong>
+                <em>1:00 PM — Atrium</em>
+              </span>
+            </label>
+            <label class="session-item">
+              <input type="checkbox" name="session" value="Closing Ceremony" />
+              <span class="session-check"></span>
+              <span class="session-text">
+                <strong>Closing Ceremony</strong>
+                <em>4:00 PM — Main Hall</em>
+              </span>
+            </label>
+          </div>
+          <span class="field-error" id="err-sessions"></span>
+        </div>
+
+        <!-- Payment Status -->
+        <div class="field-group" id="fg-payment">
+          <label>Payment Status <span class="req">*</span></label>
+          <div class="payment-options">
+            <label class="pay-chip">
+              <input type="radio" name="payment" value="Paid" />
+              <span>Paid</span>
+            </label>
+            <label class="pay-chip">
+              <input type="radio" name="payment" value="Pending" />
+              <span>Pending</span>
+            </label>
+            <label class="pay-chip">
+              <input type="radio" name="payment" value="Complimentary" />
+              <span>Complimentary</span>
+            </label>
+            <label class="pay-chip">
+              <input type="radio" name="payment" value="Invoiced" />
+              <span>Invoiced</span>
+            </label>
+          </div>
+          <span class="field-error" id="err-payment"></span>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span id="submitLabel">Register Attendee</span>
+          </button>
+          <button type="button" class="btn-cancel" id="cancelBtn" style="display:none">
+            Cancel Edit
+          </button>
+        </div>
+
+      </form>
+    </aside>
+
+    <!-- ── RIGHT: REGISTRATIONS PANEL ────────────────────────── -->
+    <section class="list-panel">
+      <div class="list-header">
+        <div class="panel-label">
+          <span class="label-tag">REGISTRATIONS</span>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" placeholder="Search name, email, ticket…" />
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">◎</div>
+        <p>No registrations yet.<br/>Fill out the form to add your first attendee.</p>
+      </div>
+
+      <!-- Cards Container -->
+      <div class="cards-grid" id="cardsGrid"></div>
+
+    </section>
+
+  </main>
+
+  <!-- ── TOAST ──────────────────────────────────────────────── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ── DELETE MODAL ───────────────────────────────────────── -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <p class="modal-msg">Remove this registration?<br/><span id="modalName"></span></p>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="modalCancel">Keep</button>
+        <button class="btn-modal-confirm" id="modalConfirm">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAYMENT MODAL ─────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal">
+      <p class="modal-msg">Choose Payment Method<br/><span id="paymentModalSubtitle">General Ticket - $50.00</span></p>
+      <div style="text-align: center; margin: 1.5rem 0;">
+        <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--ink-mid);">How would you like to pay?</p>
+        <button class="payment-method-btn" id="stripeBtn">
+          💳 Pay with Card (Stripe)
+        </button>
+        <button class="payment-method-btn" id="complimentaryBtn" style="background: var(--blue); color: white; margin-top: 0.75rem;">
+          🎁 Complimentary / Cash
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="paymentCancel">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

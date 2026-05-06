@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - RSVP{% endblock %}
+
+{% block content %}
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-header">
+      <h1>Admin</h1>
+      <p>Event Registration System</p>
+    </div>
+
+    <form id="loginForm" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter username" autocomplete="off" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" />
+      </div>
+
+      <div id="errorMessage" class="error-message"></div>
+
+      <button type="submit" class="btn-login">Login</button>
+    </form>
+
+    <p class="login-hint">
+      <strong>Demo:</strong> admin / admin123<br>
+      (Change immediately in production!)
+    </p>
+  </div>
+</div>
+
+<style>
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--surface) 0%, #f5f1e8 100%);
+  }
+
+  .login-container {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .login-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .login-header p {
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .form-group input {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200, 68, 28, 0.1);
+  }
+
+  .error-message {
+    background: #fee;
+    color: #c33;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    text-align: center;
+  }
+
+  .error-message.show {
+    display: block;
+  }
+
+  .btn-login {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-login:hover {
+    background: #b63a16;
+    transform: translateY(-2px);
+  }
+
+  .login-hint {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const errorDiv = document.getElementById('errorMessage');
+
+  errorDiv.classList.remove('show');
+
+  try {
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('adminToken', data.token);
+      sessionStorage.setItem('adminUsername', username);
+      window.location.href = '/admin/dashboard';
+    } else {
+      const data = await response.json();
+      errorDiv.textContent = data.error || 'Invalid credentials';
+      errorDiv.classList.add('show');
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    errorDiv.textContent = 'Login failed. Please try again.';
+    errorDiv.classList.add('show');
+  }
+});
+</script>
+{% endblock %}

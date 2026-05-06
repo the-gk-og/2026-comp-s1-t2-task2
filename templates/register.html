@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Register - RSVP{% endblock %}
+
+{% block content %}
+<main class="form-page">
+  <div class="form-container">
+    <!-- Header -->
+    <div class="form-header">
+      <h1>{{ event.name }}</h1>
+      <p class="event-description">{{ event.description }}</p>
+    </div>
+
+    <!-- Registration Form -->
+    <form id="eventForm" class="event-form" novalidate>
+      {% for field in event.form_fields %}
+        <div class="form-field" id="field-{{ field.name }}">
+          <label for="{{ field.name }}">
+            {{ field.label }}
+            {% if field.required %}<span class="required">*</span>{% endif %}
+          </label>
+
+          {% if field.type == 'text' %}
+            <input 
+              type="text" 
+              id="{{ field.name }}" 
+              name="{{ field.name }}"
+              placeholder="{{ field.placeholder or '' }}"
+              {% if field.required %}required{% endif %}
+              autocomplete="off"
+            />
+
+          {% elif field.type == 'email' %}
+            <input 
+              type="email" 
+              id="{{ field.name }}" 
+              name="{{ field.name }}"
+              placeholder="{{ field.placeholder or '' }}"
+              {% if field.required %}required{% endif %}
+            />
+
+          {% elif field.type == 'textarea' %}
+            <textarea 
+              id="{{ field.name }}" 
+              name="{{ field.name }}"
+              placeholder="{{ field.placeholder or '' }}"
+              rows="4"
+              {% if field.required %}required{% endif %}
+            ></textarea>
+
+          {% elif field.type == 'select' %}
+            <select id="{{ field.name }}" name="{{ field.name }}" {% if field.required %}required{% endif %}>
+              <option value="">Choose {{ field.label }}</option>
+              {% for option in field.options %}
+                <option value="{{ option }}">{{ option }}</option>
+              {% endfor %}
+            </select>
+
+          {% elif field.type == 'radio' %}
+            <div class="radio-group">
+              {% for option in field.options %}
+                <label class="radio-label">
+                  <input 
+                    type="radio" 
+                    name="{{ field.name }}" 
+                    value="{{ option }}"
+                    {% if field.required %}required{% endif %}
+                  />
+                  <span>{{ option }}</span>
+                </label>
+              {% endfor %}
+            </div>
+
+          {% elif field.type == 'checkbox' %}
+            <div class="checkbox-group">
+              {% for option in field.options %}
+                <label class="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    name="{{ field.name }}" 
+                    value="{{ option }}"
+                  />
+                  <span>{{ option }}</span>
+                </label>
+              {% endfor %}
+            </div>
+
+          {% endif %}
+
+          <span class="field-error" id="err-{{ field.name }}"></span>
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="submit-btn">Register for {{ event.name }}</button>
+    </form>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message" style="display: none;">
+      <h2>✓ Registration Successful!</h2>
+      <p>Your registration has been received. You'll receive a confirmation email shortly.</p>
+    </div>
+  </div>
+</main>
+
+<style>
+  .form-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--surface) 0%, #f5f1e8 100%);
+    padding: 2rem 1rem;
+  }
+
+  .form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  }
+
+  .form-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  .form-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--ink);
+  }
+
+  .event-description {
+    color: var(--muted);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-field label {
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  .required {
+    color: var(--accent);
+  }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200, 68, 28, 0.1);
+  }
+
+  .radio-group,
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .radio-label,
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .radio-label input,
+  .checkbox-label input {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+
+  .field-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    display: none;
+  }
+
+  .field-error.show {
+    display: block;
+  }
+
+  .submit-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+  }
+
+  .submit-btn:hover {
+    background: #b63a16;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200, 68, 28, 0.2);
+  }
+
+  .success-message {
+    text-align: center;
+    padding: 2rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+    border: 1px solid #86efac;
+  }
+
+  .success-message h2 {
+    color: #16a34a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .success-message p {
+    color: #4b5563;
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .form-container {
+      padding: 2rem 1rem;
+    }
+
+    .form-header h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+const EVENT_ID = '{{ event.id }}';
+
+document.getElementById('eventForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
+
+  // Convert checkbox values to array
+  const checkboxes = e.target.querySelectorAll('input[type="checkbox"]:checked');
+  checkboxes.forEach(cb => {
+    if (!data[cb.name]) {
+      data[cb.name] = [];
+    }
+    if (Array.isArray(data[cb.name])) {
+      data[cb.name].push(cb.value);
+    } else {
+      data[cb.name] = [data[cb.name], cb.value];
+    }
+  });
+
+  try {
+    const response = await fetch(`/api/register/${EVENT_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      document.getElementById('eventForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'block';
+    } else {
+      const error = await response.json();
+      alert('Registration failed: ' + (error.error || 'Unknown error'));
+    }
+  } catch (err) {
+    console.error('Registration error:', err);
+    alert('Failed to register');
+  }
+});
+</script>
+{% endblock %}
