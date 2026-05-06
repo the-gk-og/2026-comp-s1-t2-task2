@@ -8,6 +8,26 @@ from datetime import datetime
 import csv
 import io
 
+def _first_scalar(value):
+    """Return first non-empty scalar from value/list."""
+    if isinstance(value, list):
+        for item in value:
+            text = str(item).strip()
+            if text:
+                return text
+        return ''
+    if value is None:
+        return ''
+    return str(value).strip()
+
+
+def _to_string_list(value):
+    """Normalize to list of non-empty strings."""
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    text = str(value).strip() if value is not None else ''
+    return [text] if text else []
+
 
 def create_routes(app):
     """Create event management routes"""
@@ -137,18 +157,22 @@ def create_routes(app):
             # Validate required fields from event's form
             required_fields = [f for f in event['form_fields'] if f.get('required')]
             for field in required_fields:
-                if field['name'] not in data or not data[field['name']]:
+                field_value = data.get(field['name'])
+                if isinstance(field_value, list):
+                    if len(_to_string_list(field_value)) == 0:
+                        return jsonify({'error': f"Missing required field: {field['label']}"}), 400
+                elif not _first_scalar(field_value):
                     return jsonify({'error': f"Missing required field: {field['label']}"}), 400
             
             # Extract standard fields
             registration = {
-                'name': data.get('name', ''),
-                'email': data.get('email', ''),
-                'ticket': data.get('ticket', 'General'),
-                'dietary': data.get('dietary', 'No requirements'),
-                'sessions': data.get('sessions', []),
-                'paymentStatus': data.get('paymentStatus', 'Pending'),
-                'paymentMethod': data.get('paymentMethod', ''),
+                'name': _first_scalar(data.get('name', '')),
+                'email': _first_scalar(data.get('email', '')),
+                'ticket': _first_scalar(data.get('ticket', 'General')) or 'General',
+                'dietary': _first_scalar(data.get('dietary', 'No requirements')) or 'No requirements',
+                'sessions': _to_string_list(data.get('sessions', [])),
+                'paymentStatus': _first_scalar(data.get('paymentStatus', 'Pending')) or 'Pending',
+                'paymentMethod': _first_scalar(data.get('paymentMethod', '')),
                 'event_id': event_id,
                 'custom_fields': {k: v for k, v in data.items() 
                                  if k not in ['name', 'email', 'ticket', 'dietary', 'sessions', 'paymentStatus', 'paymentMethod']},

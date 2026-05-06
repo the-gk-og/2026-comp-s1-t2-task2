@@ -311,9 +311,9 @@ function readFormData() {
   for (const [key, value] of formData.entries()) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       if (!Array.isArray(data[key])) data[key] = [data[key]];
-      data[key].push(value);
+      data[key].push(String(value).trim());
     } else {
-      data[key] = value;
+      data[key] = String(value).trim();
     }
   }
 
@@ -331,6 +331,12 @@ function readFormData() {
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function valuesAsArray(value) {
+  if (Array.isArray(value)) return value.map((v) => String(v).trim());
+  if (value === undefined || value === null) return [];
+  return [String(value).trim()];
 }
 
 function validate(data) {
@@ -353,7 +359,9 @@ function validate(data) {
     if (isEmpty) return;
 
     if (field.type === 'email' || field.validation?.kind === 'email') {
-      if (!isValidEmail(String(value))) {
+      const emailValues = valuesAsArray(value).filter(Boolean);
+      const emailValid = emailValues.length > 0 && emailValues.every((email) => isValidEmail(email));
+      if (!emailValid) {
         setError(field.name, 'Enter a valid email address.');
         valid = false;
       }

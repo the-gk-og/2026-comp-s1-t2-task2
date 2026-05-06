@@ -18,6 +18,18 @@ SMTP_PASSWORD = os.getenv('SMTP_PASSWORD', '')
 EMAIL_FROM = os.getenv('EMAIL_FROM', 'noreply@rsvpevent.com')
 SEND_CONFIRMATION_EMAIL = os.getenv('SEND_CONFIRMATION_EMAIL', 'true').lower() == 'true'
 
+def _normalize_email_value(value):
+    """Return a single email string from scalar/list input."""
+    if isinstance(value, list):
+        for item in value:
+            candidate = str(item).strip()
+            if candidate:
+                return candidate
+        return ''
+    if value is None:
+        return ''
+    return str(value).strip()
+
 
 def send_email(to_email, subject, html_content, attachments=None):
     """Send email using SMTP"""
@@ -30,7 +42,11 @@ def send_email(to_email, subject, html_content, attachments=None):
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
         msg['From'] = EMAIL_FROM
-        msg['To'] = to_email
+        normalized_email = _normalize_email_value(to_email)
+        if not normalized_email:
+            print(f"Email not sent; invalid recipient for subject: {subject}")
+            return False
+        msg['To'] = normalized_email
 
         # Attach HTML content
         msg.attach(MIMEText(html_content, 'html'))
@@ -48,10 +64,10 @@ def send_email(to_email, subject, html_content, attachments=None):
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
             server.starttls()  
             server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(EMAIL_FROM, to_email, msg.as_string())
+            server.sendmail(EMAIL_FROM, [normalized_email], msg.as_string())
 
 
-        print(f"Email sent to {to_email} - {subject}")
+        print(f"Email sent to {normalized_email} - {subject}")
         return True
 
     except Exception as e:
@@ -62,7 +78,8 @@ def send_email(to_email, subject, html_content, attachments=None):
 def send_confirmation_email(registration, event=None):
     """Send confirmation email with event details"""
     try:
-        if not registration.get('email'):
+        recipient_email = _normalize_email_value(registration.get('email'))
+        if not recipient_email:
             print("No email address provided")
             return False
         
@@ -70,8 +87,8 @@ def send_confirmation_email(registration, event=None):
         event_name = event.get('name', 'Event') if event else 'Event'
         
         send_email(
-            registration['email'],
-            f'Registration Confirmed - {event_name} ',
+            recipient_email,
+            f'Your registration for {event_name}',
             html_content
         )
         return True
@@ -83,10 +100,14 @@ def send_confirmation_email(registration, event=None):
 def send_ticket_email(registration):
     """Send ticket email with Google Wallet support"""
     try:
+        recipient_email = _normalize_email_value(registration.get('email'))
+        if not recipient_email:
+            print("No email address provided for ticket email")
+            return
         html_content = generate_ticket_email_html(registration)
         send_email(
-            registration['email'],
-            f"Your {registration['ticket']} Ticket - Event Registration",
+            recipient_email,
+            f"Your {registration['ticket']} ticket",
             html_content
         )
     except Exception as e:
@@ -161,13 +182,13 @@ def generate_confirmation_email_html(reg, event=None):
         <style>
           body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; }}
           .container {{ max-width: 600px; margin: 0 auto; background: #fff; }}
-          .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0; }}
-          .header h1 {{ margin: 0; font-size: 28px; }}
+          .header {{ background: #1f2937; color: white; padding: 28px 20px; text-align: left; border-radius: 8px 8px 0 0; }}
+          .header h1 {{ margin: 0; font-size: 24px; }}
           .content {{ padding: 30px; }}
-          .event-info {{ background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #667eea; }}
-          .ticket-box {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; }}
-          .ticket-id {{ font-size: 32px; font-weight: bold; letter-spacing: 2px; margin: 10px 0; font-family: 'Courier New', monospace; }}
-          .ticket-id-label {{ font-size: 12px; opacity: 0.9; }}
+          .event-info {{ background: #f8fafc; padding: 15px; border-radius: 5px; margin: 20px 0; border: 1px solid #e5e7eb; }}
+          .ticket-box {{ background: #f3f4f6; color: #111827; padding: 16px; border-radius: 5px; margin: 20px 0; text-align: left; border: 1px solid #d1d5db; }}
+          .ticket-id {{ font-size: 20px; font-weight: 700; letter-spacing: 1px; margin: 6px 0; font-family: 'Courier New', monospace; }}
+          .ticket-id-label {{ font-size: 12px; color: #6b7280; }}
           table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
           .footer {{ text-align: center; padding: 20px; color: #999; font-size: 12px; border-top: 1px solid #ddd; background: #f9f9f9; border-radius: 0 0 8px 8px; }}
         </style>
@@ -175,42 +196,42 @@ def generate_confirmation_email_html(reg, event=None):
       <body>
         <div class="container">
           <div class="header">
-            <h1>🎉 Registration Confirmed!</h1>
-            <p>Thank you for registering</p>
+            <h1>Registration confirmed</h1>
+            <p style="margin: 8px 0 0 0;">{escape_html(event_name)}</p>
           </div>
           
           <div class="content">
-            <p>Hello <strong>{escape_html(reg.get('name', 'Attendee'))}</strong>,</p>
+            <p>Hi {escape_html(reg.get('name', 'there'))},</p>
             
-            <p>We're excited to have you! Your registration for <strong>{escape_html(event_name)}</strong> has been confirmed.</p>
+            <p>Thanks for registering. This email confirms your spot for <strong>{escape_html(event_name)}</strong>.</p>
             
             <div class="event-info">
-              <h3 style="margin-top: 0;">{escape_html(event_name)}</h3>
+              <h3 style="margin-top: 0;">Event details</h3>
+              <p style="margin: 8px 0;"><strong>Name:</strong> {escape_html(event_name)}</p>
               {f'<p>{escape_html(event_desc)}</p>' if event_desc else ''}
             </div>
             
             <div class="ticket-box">
-              <div class="ticket-id-label">Your Ticket ID</div>
+              <div class="ticket-id-label">Registration reference</div>
               <div class="ticket-id">{ticket_id}</div>
-              <p style="margin: 10px 0 0 0; font-size: 12px; opacity: 0.9;">Please keep this ID handy for check-in</p>
+              <p style="margin: 10px 0 0 0; font-size: 12px; color: #4b5563;">Keep this reference for check-in.</p>
             </div>
             
-            <h3>Your Registration Details:</h3>
+            <h3>Your registration details</h3>
             <table>
               {details_html}
             </table>
             
-            <p style="background: #f0f4ff; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-              <strong>Next Steps:</strong> Please check your email for additional information and instructions before the event. 
-              If you have any questions, please reply to this email.
+            <p style="background: #f9fafb; padding: 15px; border-radius: 5px; border: 1px solid #e5e7eb;">
+              If any details are incorrect, reply to this email and we will help update them.
             </p>
             
-            <p>See you at the event!</p>
-            <p>Best regards,<br/><strong>The Event Team</strong></p>
+            <p>See you soon.</p>
+            <p>Kind regards,<br/><strong>Event Team</strong></p>
           </div>
           
           <div class="footer">
-            <p>&copy; {datetime.now().year} Event Registration System | All rights reserved</p>
+            <p>&copy; {datetime.now().year} Event Team</p>
           </div>
         </div>
       </body>
@@ -244,13 +265,13 @@ def generate_ticket_email_html(reg):
       <body>
         <div class="container">
           <div class="content">
-            <h1>Your Event Ticket</h1>
+            <h1>Your ticket details</h1>
             <p>Hi <strong>{escape_html(reg['name'])}</strong>,</p>
             <p>Your ticket is ready! Here are your details:</p>
           </div>
           
           <div class="ticket">
-            <div class="ticket-header">Event Ticket</div>
+            <div class="ticket-header">Ticket</div>
             <div class="ticket-detail">
               <span class="ticket-label">Name:</span>
               <span class="ticket-value">{escape_html(reg['name'])}</span>
@@ -276,7 +297,7 @@ def generate_ticket_email_html(reg):
             <p><strong>Add to Your Digital Wallet:</strong></p>
             <p>
               <a href="#" class="wallet-button">Add to Apple Wallet</a><br>
-              <a href="#" class="wallet-button">▶Add to Google Wallet</a>
+              <a href="#" class="wallet-button">Add to Google Wallet</a>
             </p>
             
             <p><strong>Your Sessions:</strong></p>
@@ -288,7 +309,7 @@ def generate_ticket_email_html(reg):
           </div>
           
           <div class="footer">
-            <p>&copy; 2026 Event Registration System</p>
+            <p>&copy; 2026 Event Team</p>
           </div>
         </div>
       </body>

@@ -37,7 +37,7 @@ export async function loginAdmin(username, password) {
       { expiresIn: JWT_EXPIRY }
     );
 
-    console.log(`✓ Admin user ${username} logged in`);
+    console.log(`Admin user ${username} logged in`);
     return token;
   } catch (error) {
     console.error('Login error:', error);
@@ -65,7 +65,7 @@ export async function createAdminUser(username, password) {
     // Save user to database
     const user = await saveAdminUser(username, passwordHash);
 
-    console.log(`✓ Admin user ${username} created`);
+    console.log(`Admin user ${username} created`);
     return user;
   } catch (error) {
     console.error('Error creating admin user:', error);
@@ -124,17 +124,17 @@ export async function generateDefaultAdmin() {
     const existingAdmin = await getAdminUserByUsername(defaultUsername);
 
     if (existingAdmin) {
-      console.log('ℹ️  Default admin already exists');
+      console.log('Default admin already exists');
       return existingAdmin;
     }
 
     // Create default admin
     const admin = await createAdminUser(defaultUsername, defaultPassword);
 
-    console.log('⚠️  DEFAULT ADMIN CREATED:');
+    console.log('DEFAULT ADMIN CREATED:');
     console.log(`   Username: ${defaultUsername}`);
     console.log(`   Password: ${defaultPassword}`);
-    console.log('   ⚠️  CHANGE THE PASSWORD IMMEDIATELY!');
+    console.log('   Change the password immediately.');
 
     return admin;
   } catch (error) {

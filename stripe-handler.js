@@ -59,7 +59,7 @@ export async function createStripeSession(registration) {
       cancel_url: `${FRONTEND_URL}?payment=cancelled`,
     });
 
-    console.log(`✓ Stripe session created: ${session.id}`);
+    console.log(`Stripe session created: ${session.id}`);
     return session;
   } catch (error) {
     console.error('Error creating Stripe session:', error);
@@ -114,7 +114,7 @@ export async function handleStripeWebhook(body) {
   }
 }
 
-=
+
 /* WEBHOOK HANDLERS                                                  */
 
 
@@ -137,7 +137,7 @@ async function handleCheckoutSessionCompleted(session) {
 
     // Save registration to database
     const savedReg = await saveRegistration(registration);
-    console.log(`✓ Registration saved for ${savedReg.name}`);
+    console.log(`Registration saved for ${savedReg.name}`);
 
     // Send ticket email with Google Wallet link
     await sendTicketEmail(savedReg);
@@ -151,7 +151,7 @@ async function handleCheckoutSessionCompleted(session) {
 
 async function handlePaymentIntentSucceeded(paymentIntent) {
   try {
-    console.log(`✓ Payment succeeded: ${paymentIntent.id}`);
+    console.log(`Payment succeeded: ${paymentIntent.id}`);
     // Additional logic if needed
   } catch (error) {
     console.error('Error handling payment success:', error);

@@ -175,7 +175,7 @@ function renderEvents(events) {
         <h3>${escapeHtml(event.name)}</h3>
         <p>${escapeHtml(event.description)}</p>
         <div class="event-fields-count">${event.form_fields.length} registration fields</div>
-        <button class="event-cta" onclick="goToEvent('${event.id}')">Register →</button>
+        <button class="event-cta" onclick="goToEvent('${event.id}')">Register</button>
       </div>
     `;
     list.appendChild(card);

@@ -32,7 +32,7 @@ def init_db():
         init_postgres()
     else:
         init_csv()
-    print(f"✓ Database initialized ({DB_TYPE.upper()})")
+    print(f"Database initialized ({DB_TYPE.upper()})")
 
 
 def init_postgres():
@@ -76,7 +76,7 @@ def init_postgres():
 
         conn.commit()
         conn.close()
-        print("✓ PostgreSQL tables created")
+        print("PostgreSQL tables created")
     except Exception as e:
         print(f"Error initializing PostgreSQL: {e}")
         raise
@@ -96,7 +96,7 @@ def init_csv():
         with open(CSV_FILE_PATH, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(headers)
-        print(f"✓ Registrations CSV created at {CSV_FILE_PATH}")
+        print(f"Registrations CSV created at {CSV_FILE_PATH}")
 
     # Create events CSV if it doesn't exist
     if not Path(EVENTS_CSV_PATH).exists():
@@ -119,13 +119,13 @@ def init_csv():
             writer.writerow([
                 event_id, 
                 'Demo Event', 
-                'Sample event for testing',
+                'Demo event',
                 json.dumps(demo_fields),
                 'true',
                 datetime.now().isoformat(),
                 datetime.now().isoformat()
             ])
-        print(f"✓ Events CSV created with demo event")
+        print("Events CSV created with demo event")
 
     # Create admin users CSV if it doesn't exist
     if not Path(ADMIN_CSV_PATH).exists():
@@ -139,7 +139,7 @@ def init_csv():
         with open(ADMIN_CSV_PATH, 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(['1', 'admin', default_password_hash])
-        print(f"✓ Admin users file created with default admin (admin/admin123)")
+        print("Admin users file created with default admin credentials")
 
 
 

@@ -28,12 +28,12 @@ export async function sendConfirmationEmail(registration) {
     const mailOptions = {
       from: EMAIL_FROM,
       to: registration.email,
-      subject: 'Registration Confirmed - Event Ticket',
+      subject: 'Registration confirmed',
       html: emailContent,
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✓ Confirmation email sent to ${registration.email}`);
+    console.log(`Confirmation email sent to ${registration.email}`);
     return info;
   } catch (error) {
     console.error('Error sending confirmation email:', error);
@@ -52,7 +52,7 @@ export async function sendTicketEmail(registration) {
     const mailOptions = {
       from: EMAIL_FROM,
       to: registration.email,
-      subject: `Your ${registration.ticket} Ticket - Event Registration`,
+      subject: `Your ${registration.ticket} ticket`,
       html: emailContent,
     };
 
@@ -74,7 +74,7 @@ export async function sendTicketEmail(registration) {
     }
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✓ Ticket email sent to ${registration.email}`);
+    console.log(`Ticket email sent to ${registration.email}`);
     return info;
   } catch (error) {
     console.error('Error sending ticket email:', error);
@@ -99,7 +99,7 @@ export async function sendAdminNotification(registration) {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✓ Admin notification sent`);
+    console.log(`Admin notification sent`);
     return info;
   } catch (error) {
     console.error('Error sending admin notification:', error);
@@ -128,7 +128,7 @@ function generateConfirmationEmailHtml(reg) {
         <style>
           body { font-family: Arial, sans-serif; color: #333; }
           .container { max-width: 600px; margin: 0 auto; }
-          .header { background: #c8441c; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+          .header { background: #1f2937; color: white; padding: 20px; text-align: left; border-radius: 8px 8px 0 0; }
           .content { padding: 30px; border: 1px solid #ddd; }
           .info-box { background: #f5f3ee; padding: 15px; margin: 15px 0; border-radius: 5px; }
           .label { font-weight: bold; color: #5a5550; }
@@ -138,13 +138,13 @@ function generateConfirmationEmailHtml(reg) {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Registration Confirmed ✓</h1>
+            <h1>Registration confirmed</h1>
           </div>
           
           <div class="content">
-            <p>Hi <strong>${escapeHtml(reg.name)}</strong>,</p>
+            <p>Hi ${escapeHtml(reg.name)},</p>
             
-            <p>Thank you for registering! Your registration has been confirmed.</p>
+            <p>Thanks for registering. Your spot is confirmed.</p>
             
             <div class="info-box">
               <p><span class="label">Registration ID:</span> ${reg.id}</p>
@@ -162,16 +162,15 @@ function generateConfirmationEmailHtml(reg) {
               ${reg.sessions.map((session) => `<li>${escapeHtml(session)}</li>`).join('')}
             </ul>
             
-            <p><strong>What's Next?</strong></p>
-            <p>You will receive a detailed ticket email shortly. Check your inbox for your ticket and Google Wallet pass.</p>
+            <p>You will receive your ticket details in a follow-up email.</p>
             
-            <p>If you have any questions, please don't hesitate to contact us.</p>
+            <p>If anything looks incorrect, reply to this email and we will help.</p>
             
-            <p>Best regards,<br/>The Events Team</p>
+            <p>Kind regards,<br/>Event Team</p>
           </div>
           
           <div class="footer">
-            <p>&copy; 2026 Event Registration System. All rights reserved.</p>
+            <p>&copy; 2026 Event Team</p>
           </div>
         </div>
       </body>
@@ -204,13 +203,13 @@ function generateTicketEmailHtml(reg) {
       <body>
         <div class="container">
           <div class="content">
-            <h1>Your Event Ticket</h1>
+            <h1>Your ticket details</h1>
             <p>Hi <strong>${escapeHtml(reg.name)}</strong>,</p>
-            <p>Your ticket is ready! Here are your details:</p>
+            <p>Here are your registration details:</p>
           </div>
           
           <div class="ticket">
-            <div class="ticket-header">Event Ticket</div>
+            <div class="ticket-header">Ticket</div>
             <div class="ticket-detail">
               <span class="ticket-label">Name:</span>
               <span class="ticket-value">${escapeHtml(reg.name)}</span>
@@ -238,10 +237,10 @@ function generateTicketEmailHtml(reg) {
           </div>
           
           <div class="content">
-            <p><strong>Add to Your Digital Wallet:</strong></p>
+            <p><strong>Wallet options:</strong></p>
             <p>
               <a href="#" class="wallet-button">Add to Apple Wallet</a><br>
-              <a href="#" class="wallet-button">▶Add to Google Wallet</a>
+              <a href="#" class="wallet-button">Add to Google Wallet</a>
             </p>
             
             <p><strong>Your Sessions:</strong></p>
@@ -249,11 +248,11 @@ function generateTicketEmailHtml(reg) {
               ${reg.sessions.map((session) => `<li>${escapeHtml(session)}</li>`).join('')}
             </ul>
             
-            <p>See you at the event!</p>
+            <p>See you soon.</p>
           </div>
           
           <div class="footer">
-            <p>&copy; 2026 Event Registration System</p>
+            <p>&copy; 2026 Event Team</p>
           </div>
         </div>
       </body>
@@ -343,10 +342,10 @@ function escapeHtml(text) {
 export async function testEmailConnection() {
   try {
     await transporter.verify();
-    console.log('✓ Email service connected and ready');
+    console.log('Email service connected and ready');
     return true;
   } catch (error) {
-    console.error('✗ Email service connection failed:', error);
+    console.error('Email service connection failed:', error);
     return false;
   }
 }

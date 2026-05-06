@@ -66,7 +66,7 @@ def create_routes(app):
                 cancel_url=f"{FRONTEND_URL}?payment=cancelled",
             )
 
-            print(f"✓ Stripe session created: {session.id}")
+            print(f"Stripe session created: {session.id}")
             return jsonify({'url': session.url})
 
         except Exception as e:
@@ -140,7 +140,7 @@ def create_stripe_session(registration):
             cancel_url=f"{FRONTEND_URL}?payment=cancelled",
         )
 
-        print(f"✓ Stripe session created: {session.id}")
+        print(f"Stripe session created: {session.id}")
         return session
 
     except Exception as e:
@@ -167,7 +167,7 @@ def handle_checkout_session_completed(session):
 
         # Save registration to database
         saved_reg = save_registration(registration)
-        print(f"✓ Registration saved for {saved_reg['name']}")
+        print(f"Registration saved for {saved_reg['name']}")
 
         # Send ticket email
         try:
@@ -185,7 +185,7 @@ def handle_checkout_session_completed(session):
 def handle_payment_intent_succeeded(payment_intent):
     """Handle payment intent succeeded"""
     try:
-        print(f"✓ Payment succeeded: {payment_intent.get('id')}")
+        print(f"Payment succeeded: {payment_intent.get('id')}")
     except Exception as e:
         print(f"Error handling payment success: {e}")
 

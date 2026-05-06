@@ -43,7 +43,7 @@ export async function initDb() {
   } else {
     await initCsv();
   }
-  console.log(`✓ Database initialized (${DB_TYPE.toUpperCase()})`);
+  console.log(`Database initialized (${DB_TYPE.toUpperCase()})`);
 }
 
 async function initPostgres() {
@@ -74,7 +74,7 @@ async function initPostgres() {
       CREATE INDEX IF NOT EXISTS idx_ticket ON registrations(ticket);
     `);
 
-    console.log('✓ PostgreSQL tables created');
+    console.log('PostgreSQL tables created');
   } catch (error) {
     console.error('Error initializing PostgreSQL:', error);
     throw error;
@@ -107,7 +107,7 @@ async function initCsv() {
     csvWriter.write(headers.join(',') + '\n');
     csvWriter.end();
 
-    console.log(`✓ CSV file created at ${CSV_FILE_PATH}`);
+    console.log(`CSV file created at ${CSV_FILE_PATH}`);
   }
 }
 

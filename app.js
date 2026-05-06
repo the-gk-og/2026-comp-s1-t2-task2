@@ -31,7 +31,7 @@ async function init() {
     const response = await fetch(`${API_URL}/registrations`);
     if (response.ok) {
       registrations = await response.json();
-      console.log('✓ Loaded registrations from server');
+      console.log('Loaded registrations from server');
     } else {
       throw new Error('API not available');
     }
@@ -49,7 +49,7 @@ async function init() {
 function checkPaymentSuccess() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('payment') === 'success') {
-    showToast('✓ Payment successful! Your ticket has been sent to your email.');
+    showToast('Payment successful. Your ticket has been sent to your email.');
     window.history.replaceState({}, document.title, window.location.pathname);
   } else if (urlParams.get('payment') === 'cancelled') {
     showToast('Payment cancelled. Please try again.');
@@ -137,7 +137,7 @@ complimentaryBtn.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.success) {
-      showToast('✓ Registration successful! Check your email for your ticket.');
+      showToast('Registration successful. Check your email for your ticket.');
       resetForm();
       // Reload registrations from API
       const regsResponse = await fetch(`${API_URL}/registrations`);
@@ -321,8 +321,8 @@ function buildCard(r) {
   const paymentBadge = `<span class="badge badge-pay-${r.payment}">${r.payment}</span>`;
 
   const dietaryLabel = r.dietary && r.dietary !== 'None'
-    ? `🍽 ${r.dietary}`
-    : '🍽 No requirements';
+    ? `${r.dietary}`
+    : 'No requirements';
 
   return `
     <div class="reg-card" data-ticket="${r.ticket}" data-id="${r.id}">

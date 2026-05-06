@@ -39,7 +39,7 @@ def create_routes(app):
                 identity={'userId': user['id'], 'username': user['username']}
             )
 
-            print(f"✓ Admin user {username} logged in")
+            print(f"Admin user {username} logged in")
             return jsonify({'success': True, 'token': access_token})
 
         except Exception as e:
@@ -63,7 +63,7 @@ def create_routes(app):
 
             user = save_admin_user(username, password_hash.decode('utf-8'))
 
-            print(f"✓ Admin user {username} created")
+            print(f"Admin user {username} created")
             return jsonify({
                 'success': True,
                 'message': 'Admin user created',
@@ -107,17 +107,17 @@ def generate_default_admin():
         existing_admin = get_admin_user_by_username(default_username)
 
         if existing_admin:
-            print("ℹ️  Default admin already exists")
+            print("Default admin already exists")
             return existing_admin
 
         # Create default admin
         password_hash = bcrypt.hashpw(default_password.encode('utf-8'), bcrypt.gensalt(10))
         admin = save_admin_user(default_username, password_hash.decode('utf-8'))
 
-        print("⚠️  DEFAULT ADMIN CREATED:")
+        print("DEFAULT ADMIN CREATED:")
         print(f"   Username: {default_username}")
         print(f"   Password: {default_password}")
-        print("   ⚠️  CHANGE THE PASSWORD IMMEDIATELY!")
+        print("   Change the password immediately.")
 
         return admin
 

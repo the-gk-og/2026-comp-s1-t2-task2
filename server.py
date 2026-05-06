@@ -89,6 +89,9 @@ def serve_css():
 def serve_app_js():
     """Serve app JavaScript"""
     return send_from_directory('.', 'app.js')
+
+
+@app.route('/health')
 def health_check():
     """Health check endpoint"""
     return jsonify({

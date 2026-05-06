@@ -149,6 +149,14 @@ function esc(v) {
   return String(v ?? '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
 
+function fieldNameExists(name) {
+  const normalized = String(name || '').trim().toLowerCase();
+  if (!normalized) return false;
+  const inDefaults = requiredDemoFields.some((f) => f.name.toLowerCase() === normalized);
+  const inCustom = fields.some((f) => f.name.toLowerCase() === normalized);
+  return inDefaults || inCustom;
+}
+
 async function loadEvents() {
   const res = await fetch(`${API}/events`);
   events = await res.json();
@@ -317,6 +325,7 @@ document.getElementById('addFieldBtn').addEventListener('click', () => {
   const required = document.getElementById('fieldRequired').checked;
   const options = document.getElementById('fieldOptions').value.split(',').map((o) => o.trim()).filter(Boolean);
   if (!label || !name) return alert('Field label and name are required');
+  if (fieldNameExists(name)) return alert(`Field name "${name}" already exists. Use a unique field name.`);
   const field = { label, name, type, required, placeholder };
   if (['select', 'checkbox', 'radio'].includes(type)) {
     if (!options.length) return alert('Options are required for this field type');
@@ -336,6 +345,7 @@ document.getElementById('applyPresetBtn').addEventListener('click', () => {
   if (!presetKey) return;
   const preset = fieldPresets[presetKey];
   if (!preset) return;
+  if (fieldNameExists(preset.name)) return alert(`Field "${preset.label}" already exists in this form.`);
   const field = JSON.parse(JSON.stringify(preset));
   fields.push(field);
   renderFields();
